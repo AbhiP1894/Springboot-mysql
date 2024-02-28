@@ -1,0 +1,23 @@
+name: Snyk-IAC-test
+on: push
+jobs: 
+ snyk-scan: 
+  runs-on: ubuntu-latest
+  steps:
+   - name: Checkout Repository
+     uses: actions/checkout@v2
+   - name: Setup Java
+     uses: actions/setup-java@v2
+     
+   - name: Build with Maven
+     run: mvn clean install
+
+   - name: Install Snyk CLI
+     run: npm install -g snyk
+
+   - name: Snyk Authentication
+     run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+   - name: Snyk Scan
+    # run: snyk test --severity-threshold=low --ignore=VULN-ID-1,VULN-ID-2 --json > snyk-report.json
+     run: snyk iac test --report --org=cybage-poc
